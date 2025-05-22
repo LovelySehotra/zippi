@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+
+  payment:
+    build:
+      context: .
+      dockerfile: ./apps/payment/Dockerfile
+    ports:
+      - "3002:3000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+
+# Add other microservices similarly...

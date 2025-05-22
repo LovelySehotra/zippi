@@ -1,0 +1,23 @@
+# Use official Node.js image as base
+FROM node:18-alpine
+
+# Set working directory inside container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json or yarn.lock files
+COPY package*.json ./
+
+# Install dependencies (run once and cached)
+RUN npm install --production
+
+# Copy all source files
+COPY . .
+
+# Build the NestJS app (transpile TypeScript)
+RUN npm run build
+
+# Expose port (adjust if needed)
+EXPOSE 3000
+
+# Start the app
+CMD ["node", "dist/main.js"]
