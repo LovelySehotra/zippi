@@ -9,6 +9,8 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
+     "start:user": "ts-node apps/user/src/main.ts",
+     "start:gateway": "ts-node apps/api-gateway/src/main.ts",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/zippi/main",
@@ -17,7 +19,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/zippi/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/zippi/test/jest-e2e.json",
+    "codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@apollo/server": "^4.12.1",
@@ -25,6 +28,7 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/graphql": "^13.1.0",
+    "@nestjs/microservices": "^11.1.1",
     "@nestjs/platform-express": "^11.0.1",
     "apollo-server-express": "^3.13.0",
     "graphql": "^16.11.0",
@@ -35,6 +39,10 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
+    "@graphql-codegen/cli": "5.0.6",
+    "@graphql-codegen/introspection": "4.0.3",
+    "@graphql-codegen/typescript": "4.1.6",
+    "@graphql-codegen/typescript-resolvers": "4.5.1",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
