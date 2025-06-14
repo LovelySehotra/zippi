@@ -1,10 +1,8 @@
-version: "3.9"
-
 services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "6380:6379"
 
   api-gateway:
     build:
@@ -17,12 +15,34 @@ services:
     depends_on:
       - redis
 
-  auth:
+  billpay:
     build:
       context: .
-      dockerfile: ./apps/auth/Dockerfile
+      dockerfile: ./apps/billpay/Dockerfile
     ports:
-      - "3001:3000"
+      - "3004:3000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+
+  notification:
+    build:
+      context: .
+      dockerfile: ./apps/notification/Dockerfile
+    ports:
+      - "3005:3000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+
+  subscription:
+    build:
+      context: .
+      dockerfile: ./apps/subscription/Dockerfile
+    ports:
+      - "3006:3000"
     environment:
       - REDIS_HOST=redis
     depends_on:
@@ -34,6 +54,17 @@ services:
       dockerfile: ./apps/payment/Dockerfile
     ports:
       - "3002:3000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+
+  user:
+    build:
+      context: .
+      dockerfile: ./apps/user/Dockerfile
+    ports:
+      - "3003:3000"
     environment:
       - REDIS_HOST=redis
     depends_on:

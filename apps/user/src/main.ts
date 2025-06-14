@@ -4,7 +4,7 @@ import { UserModule } from './user.module';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { PrometheusMetrics } from "./building-blocks/monitoring/prometheus.metrics";
-import { ErrorHandlersFilter } from "./building-blocks/filters/error-handlers/error-handlers.filter"
+// import { ErrorHandlersFilter } from "./building-blocks/filters/error-handlers/error-handlers.filter"
 import configs from "./building-blocks/configs/configs"
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
@@ -12,17 +12,17 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 async function bootstrap() {
   const app = await NestFactory.create(UserModule);
 
-  // 🔌 Add TCP microservice listener
+  // 🔌 Add Redis microservice listener
   app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.TCP,
+    transport: Transport.REDIS,
     options: {
-      host: '127.0.0.1',
-      port: 3002,
+      host: process.env.REDIS_HOST || 'localhost',
+      port: 6379,
     },
   });
 
   await app.startAllMicroservices(); // 🔥 Start microservices
-  Logger.log(`✅ TCP microservice is listening on port 3002`);
+  Logger.log('User microservice is running');
 
   app.enableShutdownHooks();
 
