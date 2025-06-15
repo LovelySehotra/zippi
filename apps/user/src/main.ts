@@ -3,11 +3,10 @@ import { UserModule } from './user.module';
 
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { PrometheusMetrics } from "./building-blocks/monitoring/prometheus.metrics";
+import { PrometheusMetrics } from './building-blocks/monitoring/prometheus.metrics';
 // import { ErrorHandlersFilter } from "./building-blocks/filters/error-handlers/error-handlers.filter"
-import configs from "./building-blocks/configs/configs"
+import configs from './building-blocks/configs/configs';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-
 
 async function bootstrap() {
   const app = await NestFactory.create(UserModule);
@@ -45,7 +44,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  app.use((req:any, res:any, next:any) => {
+  app.use((req: any, res: any, next: any) => {
     if (req.originalUrl === '/' || req.originalUrl.includes('favicon.ico')) {
       return res.send(configs.serviceName);
     }

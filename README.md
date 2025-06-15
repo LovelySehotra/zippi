@@ -123,6 +123,68 @@ For detailed architecture, Redis transport, GraphQL gateway setup, and service-s
 
 ---
 
+## 🚀 Running Services
+
+To run a specific service in development mode, use the following commands. Once a service is running, its API documentation is typically available at `http://localhost:PORT/api`.
+
+-   **API Gateway:**
+    ```bash
+    npm run start:dev api-gateway
+    ```
+
+-   **User Service:**
+    ```bash
+    npm run start:dev user
+    ```
+
+-   **Payment Service:**
+    ```bash
+    npm run start:dev payment
+    ```
+
+-   **Subscription Service:**
+    ```bash
+    npm run start:dev subscription
+    ```
+
+-   **Bill Pay Service:**
+    ```bash
+    npm run start:dev billpay
+    ```
+
+-   **Notification Service:**
+    ```bash
+    npm run start:dev notification
+    ```
+
+---
+
+## 🗃️ Database Migrations
+
+This project uses TypeORM to manage database schema changes.
+
+-   **Generate a migration:**
+    After making changes to any entity, create a new migration file.
+
+    ```bash
+    npm run migration:generate -- apps/user/src/migrations/YourMigrationName
+    ```
+
+-   **Run migrations:**
+    Apply all pending migrations to the database.
+
+    ```bash
+    npm run migration:run
+    ```
+
+-   **Revert a migration:**
+    Undo the last applied migration.
+    ```bash
+    npm run migration:revert
+    ```
+
+---
+
 ## 👨‍💻 Author
 
 Lovely Sehotra

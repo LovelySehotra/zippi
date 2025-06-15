@@ -16,10 +16,14 @@ export class LoggingInterceptor implements NestInterceptor {
 
     console.log(`[${method}] ${url} - Incoming request`);
 
-    return next.handle().pipe(
-      tap(() =>
-        console.log(`[${method}] ${url} - Responded in ${Date.now() - now}ms`),
-      ),
-    );
+    return next
+      .handle()
+      .pipe(
+        tap(() =>
+          console.log(
+            `[${method}] ${url} - Responded in ${Date.now() - now}ms`,
+          ),
+        ),
+      );
   }
 }
