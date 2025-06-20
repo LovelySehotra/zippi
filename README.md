@@ -35,13 +35,15 @@ A scalable App built using **NestJS Microservices**, **GraphQL**, **Redis**, and
 ```bash
 .
 ├── apps/
-│   ├── auth/           # Auth service
-│   ├── payment/        # Payment service
-│   ├── billing/        # Utility & EMI bills
-│   ├── subscription/   # OTT subscriptions
-│   └── gateway/        # GraphQL Gateway (API entrypoint)
+│   ├── api-gateway/      # API Gateway (REST/GraphQL entrypoint)
+│   ├── billpay/          # Bill payment microservice
+│   ├── notification/     # Notification microservice
+│   ├── payment/          # Payment microservice
+│   ├── subscription/     # Subscription microservice
+│   └── user-service/     # User management, todo, bank accounts, transactions
+
 ├── libs/
-│   └── common/         # Shared DTOs, decorators, GraphQL types
+│   └── shared/         # Shared DTOs, interfaces, utilities
 ├── docker-compose.yml
 ├── k8s/                # Kubernetes manifests
 ├── .env                # Environment variables
@@ -81,11 +83,12 @@ docker-compose up --build
 
 ```bash
 # Start all services manually
-nest start auth --watch
+nest start api-gateway --watch
 nest start payment --watch
-nest start billing --watch
+nest start billpay --watch
 nest start subscription --watch
-nest start gateway --watch
+nest start notification --watch
+nest start user-service --watch
 ```
 
 ---
@@ -134,7 +137,7 @@ To run a specific service in development mode, use the following commands. Once 
 
 -   **User Service:**
     ```bash
-    npm run start:dev user
+    npm run start:dev user-service
     ```
 
 -   **Payment Service:**
@@ -167,7 +170,7 @@ This project uses TypeORM to manage database schema changes.
     After making changes to any entity, create a new migration file.
 
     ```bash
-    npm run migration:generate -- apps/user/src/migrations/YourMigrationName
+    npm run migration:generate -- apps/user-service/src/migrations/YourMigrationName
     ```
 
 -   **Run migrations:**

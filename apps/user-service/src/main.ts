@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { UserModule } from './user.module';
+import { UserModule } from './user/user.module';
 
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { PrometheusMetrics } from './building-blocks/monitoring/prometheus.metrics';
+import { PrometheusMetrics } from '../../../libs/shared/building-blocks/monitoring/prometheus.metrics';
 // import { ErrorHandlersFilter } from "./building-blocks/filters/error-handlers/error-handlers.filter"
-import configs from './building-blocks/configs/configs';
+import configs from '../../../libs/shared/building-blocks/configs/configs';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
