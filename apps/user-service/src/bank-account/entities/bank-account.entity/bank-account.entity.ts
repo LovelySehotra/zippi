@@ -21,6 +21,6 @@ export class BankAccount {
   @Column({ default: false })
   isPrimary: boolean;
 
-  @ManyToOne(() => User, user => user.bankAccounts)
+  @ManyToOne(() => User, user => user.bankAccounts, { onDelete: 'CASCADE' })
   user: User;
 }

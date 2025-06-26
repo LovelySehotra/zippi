@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
 import { BankAccount } from 'apps/user-service/src/bank-account/entities/bank-account.entity/bank-account.entity';
-import { Transaction } from 'apps/user-service/src/transaction/entities/transaction.entity/transaction.entity';
+import { Referral } from '../../referral/entities/referral.entity/referral.entity';
 
 @Entity('users')
 export class User {
@@ -25,18 +25,15 @@ export class User {
   @Column({ default: false })
   kycVerified: boolean;
 
-  @Column({ unique: true, nullable: true })
-  referralCode: string;
-
-  @Column({ nullable: true })
-  referredBy: string;
-
   @CreateDateColumn()
   createdAt: Date;
 
   @OneToMany(() => BankAccount, bank => bank.user)
   bankAccounts: BankAccount[];
 
-  @OneToMany(() => Transaction, tx => tx.sender)
-  transactions: Transaction[];
+  @OneToMany(() => Referral, referral => referral.referredUser)
+  referredUsers: Referral[];
+
+  @OneToMany(() => Referral, referral => referral.referrerUser)
+  referredBy: Referral[];
 }
