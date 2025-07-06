@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
-import { BankAccount } from 'apps/user-service/src/bank-account/entities/bank-account.entity/bank-account.entity';
+import { BankAccount } from 'apps/user-service/src/bank-account/entities/bank-account.entity';
 import { Referral } from '../../referral/entities/referral.entity/referral.entity';
 
 @Entity('users')

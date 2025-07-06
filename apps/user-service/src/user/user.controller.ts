@@ -1,64 +1,38 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { User } from './entities/user.entity';
-
-// @Controller()
-// export class UserController {
-//   constructor(private readonly userService: UserService) {}
-//   @Post()
-//   @MessagePattern({ cmd: 'create_user' })
-//   create(@Payload() userDto: Partial<User>): Promise<User> {
-//     return this.userService.create(userDto);
-//   }
-
-//   @MessagePattern({ cmd: 'find_all_users' })
-//   findAll(): Promise<User[]> {
-//     return this.userService.findAll();
-//   }
-
-//   @MessagePattern({ cmd: 'find_one_user' })
-//   findOne(@Payload('id') id: number): Promise<User> {
-//     return this.userService.findOne(id);
-//   }
-
-//   @MessagePattern({ cmd: 'update_user' })
-//   update(@Payload() data: { id: number; userDto: Partial<User> }): Promise<User> {
-//     return this.userService.update(data.id, data.userDto);
-//   }
-
-//   @MessagePattern({ cmd: 'remove_user' })
-//   remove(@Payload('id') id: number): Promise<User> {
-//     return this.userService.remove(id);
-//   }
-// }
-
+import { CreateUserDto, UpdateUserDto, UserReturnDto } from 'libs/shared/dto/userServiceDto';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() userDto: Partial<User>): Promise<User> {
+  @ApiCreatedResponse({ description: 'User created successfully', type: UserReturnDto })
+  create(@Body() userDto: CreateUserDto): Promise<UserReturnDto> {
     return this.userService.create(userDto);
   }
 
   @Get()
-  findAll(): Promise<User[]> {
+  @ApiOkResponse({ description: 'List of users', type: [UserReturnDto] })
+  findAll(): Promise<UserReturnDto[]> {
     return this.userService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User> {
+  @ApiOkResponse({ description: 'User details', type: UserReturnDto })
+  findOne(@Param('id') id: string): Promise<UserReturnDto> {
     return this.userService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() userDto: Partial<User>): Promise<User> {
+  @ApiOkResponse({ description: 'User updated', type: UserReturnDto })
+  update(@Param('id') id: string, @Body() userDto: UpdateUserDto): Promise<UserReturnDto> {
     return this.userService.update(id, userDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<User> {
+  @ApiOkResponse({ description: 'User deleted', type: UserReturnDto })
+  remove(@Param('id') id: string): Promise<UserReturnDto> {
     return this.userService.remove(id);
   }
 }

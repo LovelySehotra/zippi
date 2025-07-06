@@ -1,5 +1,9 @@
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { User } from './user/entities/user.entity';
+import { BankAccount } from './bank-account/entities/bank-account.entity';
+import { Referral } from './referral/entities/referral.entity/referral.entity';
+
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -8,7 +12,8 @@ export const dataSourceOptions: DataSourceOptions = {
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_DATABASE || 'zippiuser',
-  entities: [__dirname + '/../**/*.entity.{js,ts}'],
+  entities: [User,BankAccount ,Referral],
+
   migrations: [__dirname + '/migrations/*.{js,ts}'],
   synchronize: false,
 };

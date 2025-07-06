@@ -4,7 +4,7 @@ import { UserController } from './user.controller';
 import { TodoController } from '../todo.controller';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
-import { dataSourceOptions } from '../config/data-source';
+import { dataSourceOptions } from '../data-source';
 import { ReferralModule } from '../referral/referral.module';
 
 

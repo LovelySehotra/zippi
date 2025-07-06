@@ -1,5 +1,6 @@
 // File: src/user/user.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { AppError } from 'libs/shared/utils/app-error';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -29,7 +30,7 @@ export class UserService {
       relations: ['bankAccounts', 'referredUsers', 'referredBy']
     });
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new AppError(`User with ID ${id} not found`, 404);
     }
     return user;
   }
@@ -40,7 +41,7 @@ export class UserService {
       ...userDto,
     });
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new AppError(`User with ID ${id} not found`, 404);
     }
     return this.userRepository.save(user);
   }
