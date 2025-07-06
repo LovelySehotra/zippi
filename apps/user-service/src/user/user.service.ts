@@ -1,6 +1,6 @@
 // File: src/user/user.service.ts
 import { Injectable } from '@nestjs/common';
-import { AppError } from 'libs/shared/utils/app-error';
+import { AppError } from 'libs/shared/src/app-error';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';

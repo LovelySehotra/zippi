@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserController } from './user.controller';
-import { TodoController } from '../todo.controller';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { dataSourceOptions } from '../data-source';
 import { ReferralModule } from '../referral/referral.module';
+import { BankAccountModule } from '../bank-account/bank-account.module';
 
 
 @Module({
@@ -13,8 +13,9 @@ import { ReferralModule } from '../referral/referral.module';
     TypeOrmModule.forRoot(dataSourceOptions),
     TypeOrmModule.forFeature([User]),
     ReferralModule,
+    BankAccountModule
   ],
-  controllers: [UserController, TodoController],
+  controllers: [UserController],
   providers: [UserService],
 })
 export class UserModule {}
