@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Patch, Delete, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
 import { BankAccountService } from './bank-account.service';
-import { CreateBankAccountDto, UpdateBankAccountDto, BankAccountReturnDto } from 'libs/shared/dto/bankAccountDto';
+import { CreateBankAccountDto, UpdateBankAccountDto, BankAccountReturnDto } from 'libs/shared/dto/bankAccount.dto';
 
 @Controller('bank-accounts')
 export class BankAccountController {
