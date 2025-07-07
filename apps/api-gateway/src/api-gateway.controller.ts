@@ -1,39 +1,39 @@
-import { Body, Controller, Get, Post, Param, Delete, Patch, ParseIntPipe } from '@nestjs/common';
+import { Controller, All, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { ApiGatewayService } from './api-gateway.service';
 
 @Controller()
 export class ApiGatewayController {
   constructor(private readonly apiGatewayService: ApiGatewayService) {}
 
-  // --- User Endpoints ---
-  @Post('users')
-  createUser(@Body() userDto: any) {
-    return this.apiGatewayService.createUser(userDto);
+  @All('users/*')
+  async proxyUser(@Req() req: Request, @Res() res: Response) {
+    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3366/api');
   }
 
-  @Get('users')
-  findAllUsers() {
-    return this.apiGatewayService.findAllUsers();
+  @All('users')
+  async proxyUserRoot(@Req() req: Request, @Res() res: Response) {
+    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3366/api');
   }
 
-  @Get('users/:id')
-  findOneUser(@Param('id', ParseIntPipe) id: number) {
-    return this.apiGatewayService.findOneUser(id);
+  @All('payment/*')
+  async proxyPayment(@Req() req: Request, @Res() res: Response) {
+    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3002');
   }
 
-  @Patch('users/:id')
-  updateUser(@Param('id', ParseIntPipe) id: number, @Body() userDto: any) {
-    return this.apiGatewayService.updateUser(id, userDto);
+  @All('payment')
+  async proxyPaymentRoot(@Req() req: Request, @Res() res: Response) {
+    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3002');
   }
 
-  @Delete('users/:id')
-  removeUser(@Param('id', ParseIntPipe) id: number) {
-    return this.apiGatewayService.removeUser(id);
+  @All('notification/*')
+  async proxyNotification(@Req() req: Request, @Res() res: Response) {
+    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3004');
   }
 
-  // --- Payment Endpoint ---
-  @Post('payment')
-  processPayment(@Body() data: { amount: number; userId: string }) {
-    return this.apiGatewayService.processPayment(data);
+  @All('notification')
+  async proxyNotificationRoot(@Req() req: Request, @Res() res: Response) {
+    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3004');
   }
 }
+

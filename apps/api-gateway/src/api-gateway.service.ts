@@ -1,36 +1,35 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
+import axios from 'axios';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class ApiGatewayService {
-  constructor(
-    @Inject('USER_SERVICE') private readonly userClient: ClientProxy,
-    @Inject('PAYMENT_SERVICE') private readonly paymentClient: ClientProxy,
-  ) {}
-
-  // User CRUD
-  createUser(userDto: any) {
-    return this.userClient.send({ cmd: 'create_user' }, userDto);
-  }
-
-  findAllUsers() {
-    return this.userClient.send({ cmd: 'find_all_users' }, {});
-  }
-
-  findOneUser(id: number) {
-    return this.userClient.send({ cmd: 'find_one_user' }, id);
-  }
-
-  updateUser(id: number, userDto: any) {
-    return this.userClient.send({ cmd: 'update_user' }, { id, userDto });
-  }
-
-  removeUser(id: number) {
-    return this.userClient.send({ cmd: 'remove_user' }, id);
-  }
-
-  // Payment
-  processPayment(data: { amount: number; userId: string }) {
-    return this.paymentClient.send({ cmd: 'process_payment' }, data);
+  async proxyRequest(req: Request, res: Response, targetBaseUrl: string) {
+    try {
+      // Build the full downstream URL
+      const targetUrl = targetBaseUrl + req.originalUrl;
+      // Prepare axios config
+      const axiosConfig = {
+        method: req.method as any,
+        url: targetUrl,
+        headers: { ...req.headers, host: undefined }, // Remove host header
+        params: req.query,
+        responseType: 'stream' as const,
+        data: req.method !== 'GET' && req.method !== 'HEAD' ? req.body : undefined,
+        validateStatus: () => true, // Forward all responses
+      };
+      const response = await axios(axiosConfig);
+      res.status(response.status);
+      // Copy headers except some forbidden ones
+      Object.entries(response.headers).forEach(([key, value]) => {
+        if (key.toLowerCase() === 'transfer-encoding') return;
+        res.setHeader(key, value as string);
+      });
+      response.data.pipe(res);
+    } catch (err: any) {
+      const status = err.response?.status || 500;
+      const data = err.response?.data || { error: 'Service not reachable', details: err.message };
+      res.status(status).send(data);
+    }
   }
 }

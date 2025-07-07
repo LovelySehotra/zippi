@@ -22,6 +22,14 @@ import { ApiGatewayService } from './api-gateway.service';
           port: 6379,
         },
       },
+      {
+        name: 'NOTIFICATION_SERVICE',
+        transport: Transport.REDIS,
+        options: {
+          host: 'localhost',
+          port: 6379,
+        },
+      },
     ]),
   ],
   controllers: [ApiGatewayController],
