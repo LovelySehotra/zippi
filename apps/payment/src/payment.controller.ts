@@ -2,8 +2,6 @@ import { Controller, Post, Body, Get, Param, ParseUUIDPipe } from '@nestjs/commo
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { PaymentService } from './payment.service';
 import { TransactionService } from './transaction.service';
-// import { CreateTransactionDto, TransactionType, TransactionStatus, PaymentMethod } from '../../../../libs/shared/dto/transaction.dto';
-// import { TransactionResponseDto } from './dto/transaction-response.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { CreateTransactionDto, TransactionResponseDto } from 'libs/shared/dto/transaction.dto';
 

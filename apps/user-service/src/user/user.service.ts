@@ -19,7 +19,6 @@ export class UserService {
   }
 
   findAll(): Promise<User[]> {
-    console.log("here  i am working")
     return this.userRepository.find({
       relations: ['bankAccounts', 'referredUsers', 'referredBy']
     });

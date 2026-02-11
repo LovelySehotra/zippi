@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { dataSourceOptions } from '../data-source';
 import { ReferralModule } from '../referral/referral.module';
 import { BankAccountModule } from '../bank-account/bank-account.module';
+import { AuthModule } from '../auth/auth.module';
 
 
 @Module({
@@ -13,7 +14,8 @@ import { BankAccountModule } from '../bank-account/bank-account.module';
     TypeOrmModule.forRoot(dataSourceOptions),
     TypeOrmModule.forFeature([User]),
     ReferralModule,
-    BankAccountModule
+    BankAccountModule,
+    AuthModule
   ],
   controllers: [UserController],
   providers: [UserService],
