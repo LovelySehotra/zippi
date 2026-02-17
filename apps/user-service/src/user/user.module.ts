@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { dataSourceOptions } from '../data-source';
 import { ReferralModule } from '../referral/referral.module';
 import { BankAccountModule } from '../bank-account/bank-account.module';
+import { JwtModule } from '@nestjs/jwt';
 
 
 @Module({
@@ -13,7 +14,12 @@ import { BankAccountModule } from '../bank-account/bank-account.module';
     TypeOrmModule.forRoot(dataSourceOptions),
     TypeOrmModule.forFeature([User]),
     ReferralModule,
-    BankAccountModule
+    BankAccountModule,
+    JwtModule.register({
+      global: true,
+      secret: "kjhgkjdfhkdh", // jwtConstants.secret
+      signOptions: { expiresIn: '60s' },
+    }),
   ],
   controllers: [UserController],
   providers: [UserService],

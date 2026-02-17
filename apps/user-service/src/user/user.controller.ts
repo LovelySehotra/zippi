@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto, UserReturnDto } from 'libs/shared/dto/userService.dto';
+import { AuthGuard } from 'libs/shared/building-blocks/guards/auth.guard';
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   @ApiCreatedResponse({ description: 'User created successfully', type: UserReturnDto })
@@ -18,6 +19,7 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOkResponse({ description: 'User details', type: UserReturnDto })
   findOne(@Param('id') id: string): Promise<UserReturnDto> {
@@ -34,5 +36,11 @@ export class UserController {
   @ApiOkResponse({ description: 'User deleted', type: UserReturnDto })
   remove(@Param('id') id: string): Promise<UserReturnDto> {
     return this.userService.remove(id);
+  }
+
+  @Post('login')
+  @ApiOkResponse({ description: 'User logged in', type: UserReturnDto })
+  login(@Body() userDto: CreateUserDto): Promise<{ accessToken: string }> {
+    return this.userService.login(userDto);
   }
 }

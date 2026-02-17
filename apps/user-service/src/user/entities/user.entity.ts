@@ -21,9 +21,15 @@ export class User {
 
   @Column({ nullable: true })
   pinHash: string;
+  
+  @Column({ nullable: true })
+  password: string;
 
   @Column({ default: false })
   kycVerified: boolean;
+
+  @Column({ nullable: true })
+  accessToken: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -36,4 +42,6 @@ export class User {
 
   @OneToMany(() => Referral, referral => referral.referrerUser)
   referredBy: Referral[];
+
+
 }
