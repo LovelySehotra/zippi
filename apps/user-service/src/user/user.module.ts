@@ -7,6 +7,7 @@ import { dataSourceOptions } from '../data-source';
 import { ReferralModule } from '../referral/referral.module';
 import { BankAccountModule } from '../bank-account/bank-account.module';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from '../auth/auth.module';
 
 
 @Module({
@@ -20,6 +21,7 @@ import { JwtModule } from '@nestjs/jwt';
       secret: "kjhgkjdfhkdh", // jwtConstants.secret
       signOptions: { expiresIn: '60s' },
     }),
+    AuthModule
   ],
   controllers: [UserController],
   providers: [UserService],

@@ -10,12 +10,14 @@ export class UserController {
   @Post()
   @ApiCreatedResponse({ description: 'User created successfully', type: UserReturnDto })
   create(@Body() userDto: CreateUserDto): Promise<UserReturnDto> {
+  
     return this.userService.create(userDto);
   }
 
   @Get()
   @ApiOkResponse({ description: 'List of users', type: [UserReturnDto] })
   findAll(): Promise<UserReturnDto[]> {
+    
     return this.userService.findAll();
   }
 
@@ -23,6 +25,7 @@ export class UserController {
   @Get(':id')
   @ApiOkResponse({ description: 'User details', type: UserReturnDto })
   findOne(@Param('id') id: string): Promise<UserReturnDto> {
+    console.log("id",id)
     return this.userService.findOne(id);
   }
 

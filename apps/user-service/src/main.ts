@@ -1,61 +1,62 @@
 import { NestFactory } from '@nestjs/core';
 import { UserModule } from './user/user.module';
-
-import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
+import { Logger, ValidationPipe, VersioningType, INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { PrometheusMetrics } from '../../../libs/shared/building-blocks/monitoring/prometheus.metrics';
-// import { ErrorHandlersFilter } from "./building-blocks/filters/error-handlers/error-handlers.filter"
 import configs from '../../../libs/shared/building-blocks/configs/configs';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-async function bootstrap() {
-  const app = await NestFactory.create(UserModule);
+class UserServiceApp {
+  private app: INestApplication;
+  private readonly port = 3366;
+  private readonly globalPrefix = 'api';
 
-  // 🔌 Add Redis microservice listener
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.REDIS,
-    options: {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: 6379,
-    },
-  });
+  async setup() {
+    this.app = await NestFactory.create(UserModule);
+    this.app.connectMicroservice<MicroserviceOptions>({
+      transport: Transport.REDIS,
+      options: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: 6379,
+      },
+    });
+    await this.app.startAllMicroservices();
+    Logger.log('User microservice is running');
+    this.app.enableShutdownHooks();
+    this.app.setGlobalPrefix(this.globalPrefix);
+    this.app.enableVersioning({ type: VersioningType.URI });
 
-  await app.startAllMicroservices(); // 🔥 Start microservices
-  Logger.log('User microservice is running');
+    const config = new DocumentBuilder()
+      .setTitle(`${configs.serviceName}`)
+      .setDescription(`${configs.serviceName} api description`)
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(this.app, config);
+    SwaggerModule.setup('docs', this.app, document);
 
-  app.enableShutdownHooks();
+    this.app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
-  const port = 3366;
+    this.app.use((req: any, res: any, next: any) => {
+      if (req.originalUrl === '/' || req.originalUrl.includes('favicon.ico')) {
+        return res.send(configs.serviceName);
+      }
+      return next();
+    });
 
-  app.enableVersioning({
-    type: VersioningType.URI,
-  });
+    PrometheusMetrics.registerMetricsEndpoint(this.app);
+  }
 
-  const config = new DocumentBuilder()
-    .setTitle(`${configs.serviceName}`)
-    .setDescription(`${configs.serviceName} api description`)
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  async start() {
+    await this.setup();
+    await this.app.listen(this.port);
+    Logger.log(`🚀 Application is running on: http://localhost:${this.port}`);
+  }
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
-
-  app.use((req: any, res: any, next: any) => {
-    if (req.originalUrl === '/' || req.originalUrl.includes('favicon.ico')) {
-      return res.send(configs.serviceName);
-    }
-    return next();
-  });
-
-  PrometheusMetrics.registerMetricsEndpoint(app);
-
-  // app.useGlobalFilters(new ErrorHandlersFilter());
-
-  await app.listen(port);
-  Logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  static async bootstrap() {
+    const server = new UserServiceApp();
+    await server.start();
+  }
 }
-bootstrap();
+
+UserServiceApp.bootstrap();
