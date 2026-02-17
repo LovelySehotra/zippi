@@ -19,6 +19,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
+        //test commit
       // 💡 Here the JWT secret key that's used for verifying the payload 
       // is the key that was passsed in the JwtModule
       const payload = await this.jwtService.verifyAsync(token);
