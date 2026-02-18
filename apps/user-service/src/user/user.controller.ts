@@ -3,21 +3,25 @@ import { ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto, UserReturnDto } from 'libs/shared/dto/userService.dto';
 import { AuthGuard } from 'libs/shared/building-blocks/guards/auth.guard';
+import { ConfigService } from '@nestjs/config';
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+    private configService: ConfigService
+  ) { }
 
   @Post()
   @ApiCreatedResponse({ description: 'User created successfully', type: UserReturnDto })
   create(@Body() userDto: CreateUserDto): Promise<UserReturnDto> {
-  
+
     return this.userService.create(userDto);
   }
 
   @Get()
   @ApiOkResponse({ description: 'List of users', type: [UserReturnDto] })
   findAll(): Promise<UserReturnDto[]> {
-    
+        console.log("Creating user with config value:", this.configService.get<string>('serviceName'));
     return this.userService.findAll();
   }
 
@@ -25,7 +29,7 @@ export class UserController {
   @Get(':id')
   @ApiOkResponse({ description: 'User details', type: UserReturnDto })
   findOne(@Param('id') id: string): Promise<UserReturnDto> {
-    console.log("id",id)
+    console.log("id", id)
     return this.userService.findOne(id);
   }
 

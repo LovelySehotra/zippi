@@ -21,10 +21,8 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    console.log("here  i am working")
-    return await this.userRepository.find({
-      relations: ['bankAccounts', 'referredUsers', 'referredBy']
-    });
+    console.log("here  i am wor000king")
+    return await this.userRepository.find();
   }
 
   async findOne(id: string): Promise<User> {
