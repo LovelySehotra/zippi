@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { UserModule } from './user/user.module';
 import { PrometheusMetrics } from '../../../libs/shared/building-blocks/monitoring/prometheus.metrics';
+import { initializeDatabases } from './data-source';
 
 class UserServiceApp {
   private app!: INestApplication;
@@ -142,7 +143,7 @@ class UserServiceApp {
     const port = configService.get<number>('PORT') || 3366;
 
     await this.app.listen(port);
-
+    await initializeDatabases()
     Logger.log(`🚀 Application is running on: http://localhost:${port}`);
   }
 }
