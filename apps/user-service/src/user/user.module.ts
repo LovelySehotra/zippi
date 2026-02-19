@@ -20,7 +20,7 @@ import configs from 'libs/shared/building-blocks/configs/configs';
         isGlobal: true,
         //  ignoreEnvFile: true,
         load: [configs],
-          cache: true,
+        cache: true,
       }
     ),
     TypeOrmModule.forRoot(dataSourceOptions),
@@ -37,4 +37,4 @@ import configs from 'libs/shared/building-blocks/configs/configs';
   controllers: [UserController],
   providers: [UserService],
 })
-export class UserModule {}
+export class UserModule { }
