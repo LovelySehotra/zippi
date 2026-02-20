@@ -11,6 +11,7 @@ import { AuthModule } from '../auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import configs from 'libs/shared/building-blocks/configs/configs';
 import { DatabaseName, getDataSource } from '../data-source';
+import { CacheModule } from '@nestjs/cache-manager';
 
 
 @Module({
@@ -24,6 +25,9 @@ import { DatabaseName, getDataSource } from '../data-source';
         cache: true,
       }
     ),
+    CacheModule.register({
+       isGlobal: true,
+    }),
     TypeOrmModule.forRoot(getDataSource(DatabaseName.USER_DB).options),
     TypeOrmModule.forRoot(getDataSource(DatabaseName.PAYMENT_DB).options),
     TypeOrmModule.forFeature([User]),

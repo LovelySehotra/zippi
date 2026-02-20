@@ -1,14 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto, UserReturnDto } from 'libs/shared/dto/userService.dto';
 import { AuthGuard } from 'libs/shared/building-blocks/guards/auth.guard';
 import { ConfigService } from '@nestjs/config';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 @Controller('users')
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) { }
 
   @Post()
@@ -20,8 +22,12 @@ export class UserController {
 
   @Get()
   @ApiOkResponse({ description: 'List of users', type: [UserReturnDto] })
-  findAll(): Promise<UserReturnDto[]> {
-        console.log("Creating user with config value:", this.configService.get<string>('serviceName'));
+  async findAll(): Promise<UserReturnDto[]> {
+    const cachedValue = await this.cacheManager.get('key');
+    console.log("Cached value:", cachedValue);
+    await this.cacheManager.set('key', 'value', 1000);
+    console.log(await this.cacheManager.get("key"))
+    console.log("Creating user with config value:", this.configService.get<string>('serviceName'));
     return this.userService.findAll();
   }
 

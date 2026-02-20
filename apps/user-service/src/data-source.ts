@@ -2,6 +2,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { User } from './user/entities/user.entity';
 import { Referral } from './referral/entities/referral.entity/referral.entity';
 import { BankAccount } from './bank-account/entities/bank-account.entity';
+import { Logger } from '@nestjs/common';
 
 
 /* -------------------------------------------------------------------------- */
@@ -82,7 +83,8 @@ export async function initializeDatabases() {
 
     if (!dataSource.isInitialized) {
       await dataSource.initialize();
-      console.log(`✅ Database initialized: ${db}`);
+       Logger.log(`✅ Database initialized: ${db}`);
+    
     }
   }
 }
