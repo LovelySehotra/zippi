@@ -12,6 +12,7 @@ import { ConfigModule } from '@nestjs/config';
 import configs from 'libs/shared/building-blocks/configs/configs';
 import { DatabaseName, getDataSource } from '../data-source';
 import { CacheModule } from '@nestjs/cache-manager';
+import { BullModule } from '@nestjs/bullmq';
 
 
 @Module({
@@ -26,7 +27,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       }
     ),
     CacheModule.register({
-       isGlobal: true,
+      isGlobal: true,
     }),
     TypeOrmModule.forRoot(getDataSource(DatabaseName.USER_DB).options),
     TypeOrmModule.forRoot(getDataSource(DatabaseName.PAYMENT_DB).options),
@@ -37,6 +38,15 @@ import { CacheModule } from '@nestjs/cache-manager';
       global: true,
       secret: "kjhgkjdfhkdh", // jwtConstants.secret
       signOptions: { expiresIn: '60s' },
+    }),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
+    BullModule.registerQueue({
+      name: 'report-queue',
     }),
     // AuthModule
   ],

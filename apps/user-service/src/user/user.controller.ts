@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto, UserReturnDto } from 'libs/shared/dto/userService.dto';
 import { AuthGuard } from 'libs/shared/building-blocks/guards/auth.guard';
 import { ConfigService } from '@nestjs/config';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Request } from 'express';
 @Controller('users')
 export class UserController {
   constructor(
@@ -55,5 +56,9 @@ export class UserController {
   @ApiOkResponse({ description: 'User logged in', type: UserReturnDto })
   login(@Body() userDto: CreateUserDto): Promise<{ accessToken: string }> {
     return this.userService.login(userDto);
+  }
+  @Post('report')
+  async createReport(@Req() req: Request) {
+    return this.userService.requestReport();
   }
 }

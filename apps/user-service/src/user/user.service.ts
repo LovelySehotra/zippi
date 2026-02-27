@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 
 @Injectable()
@@ -12,7 +14,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    @InjectQueue('report-queue') private reportQueue: Queue,
   ) { }
 
   async create(userDto: Partial<User>): Promise<User> {
@@ -61,6 +64,16 @@ export class UserService {
     const payload = { phoneNumber: user?.phoneNumber, sub: user?.id };
     return {
       accessToken: await this.jwtService.signAsync(payload),
+    };
+  }
+  async requestReport(userId?: string) {
+    const job = await this.reportQueue.add('generate-report', {
+      userId,
+    });
+
+    return {
+      jobId: job.id,
+      status: 'QUEUED',
     };
   }
 }
