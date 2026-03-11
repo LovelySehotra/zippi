@@ -15,7 +15,8 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private jwtService: JwtService,
-    @InjectQueue('report-queue') private reportQueue: Queue,
+    @InjectQueue('pdf-queue')
+    private pdfQueue: Queue,
   ) { }
 
   async create(userDto: Partial<User>): Promise<User> {
@@ -66,15 +67,15 @@ export class UserService {
       accessToken: await this.jwtService.signAsync(payload),
     };
   }
-  async requestReport(userId?: string) {
-    const job = await this.reportQueue.add('generate-report', {
-      userId,
-    });
-
-    return {
-      jobId: job.id,
-      status: 'QUEUED',
-    };
+  async generatePdf(userId: string) {
+    await this.pdfQueue.add(
+      'generate-pdf',
+      { userId },
+      {
+        attempts: 3,
+        removeOnComplete: true,
+      },
+    )
   }
 }
 

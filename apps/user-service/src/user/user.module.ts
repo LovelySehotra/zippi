@@ -46,7 +46,7 @@ import { BullModule } from '@nestjs/bullmq';
       },
     }),
     BullModule.registerQueue({
-      name: 'report-queue',
+      name: 'pdf-queue',
     }),
     // AuthModule
   ],

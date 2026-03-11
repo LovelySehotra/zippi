@@ -1,41 +1,32 @@
-import * as PDFDocument from 'pdfkit';
-import * as fs from 'fs';
-import { Worker } from 'bullmq';
-// import { createReportPdf } from './report.generator';
-// import { saveFile } from './storage.service';
-export async function createReportPdf(userId: string): Promise<string> {
-  const path = `./reports/report-${userId}.pdf`;
+import { Processor, WorkerHost } from '@nestjs/bullmq'
+import { Job } from 'bullmq'
+import * as puppeteer from 'puppeteer'
 
-  const doc = new PDFDocument();
-  doc.pipe(fs.createWriteStream(path));
+@Processor('pdf-queue')
+export class PdfProcessor extends WorkerHost {
 
-  doc.fontSize(25).text('User Report', 100, 100);
-  doc.text(`Generated for user: ${userId}`);
-  doc.end();
+  async process(job: Job<any>) {
 
-  return path;
+    if (job.name === 'generate-pdf') {
+      const { userId } = job.data
+
+      const browser = await puppeteer.launch()
+
+      const page = await browser.newPage()
+
+      await page.setContent(`
+        <h1>User Report</h1>
+        <p>User ID: ${userId}</p>
+      `)
+
+      await page.pdf({
+        path: `./pdf/${userId}.pdf`,
+        format: 'A4',
+      })
+
+      await browser.close()
+
+      console.log('PDF Generated')
+    }
+  }
 }
-
-
-const worker = new Worker(
-  'report-queue',
-  async job => {
-    const { userId } = job.data;
-
-    console.log('Generating report for', userId);
-
-    const filePath = await createReportPdf(userId);
-
-    const url = await saveFile(filePath);
-
-    // TODO: update DB with completed status
-    return { url };
-  },
-  {
-    connection: { host: 'localhost', port: 6379 },
-  },
-);
-
-worker.on('completed', job => {
-  console.log('Report completed', job.id);
-});

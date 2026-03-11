@@ -57,8 +57,12 @@ export class UserController {
   login(@Body() userDto: CreateUserDto): Promise<{ accessToken: string }> {
     return this.userService.login(userDto);
   }
-  @Post('report')
-  async createReport(@Req() req: Request) {
-    return this.userService.requestReport();
+  @Post('generate')
+  async generate(@Body() data: { userId: string }) {
+    await this.userService.generatePdf(data.userId)
+
+    return {
+      message: 'PDF generation started',
+    }
   }
 }
