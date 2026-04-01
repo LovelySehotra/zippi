@@ -71,8 +71,13 @@ export class UserService {
     await this.pdfQueue.add(
       'generate-pdf',
       { userId },
-      {
+       {
+        jobId: `pdf-${userId}`,   // prevent duplicates
         attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 5000,
+        },
         removeOnComplete: true,
       },
     )
