@@ -1,39 +1,27 @@
-import { Controller, All, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { ApiGatewayService } from './api-gateway.service';
+import { Controller, Get } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
+@ApiTags('Platform')
 @Controller()
 export class ApiGatewayController {
-  constructor(private readonly apiGatewayService: ApiGatewayService) {}
-
-  @All('users/*')
-  async proxyUser(@Req() req: Request, @Res() res: Response) {
-    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3366/api');
+  @Get()
+  @ApiOperation({ summary: 'Get root api gateway information' })
+  index() {
+    return {
+      name: 'Zippi Payment Core API',
+      docs: '/api/docs',
+      health: '/health',
+    };
   }
 
-  @All('users')
-  async proxyUserRoot(@Req() req: Request, @Res() res: Response) {
-    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3366/api');
-  }
-
-  @All('payment/*')
-  async proxyPayment(@Req() req: Request, @Res() res: Response) {
-    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3002');
-  }
-
-  @All('payment')
-  async proxyPaymentRoot(@Req() req: Request, @Res() res: Response) {
-    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3002');
-  }
-
-  @All('notification/*')
-  async proxyNotification(@Req() req: Request, @Res() res: Response) {
-    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3004');
-  }
-
-  @All('notification')
-  async proxyNotificationRoot(@Req() req: Request, @Res() res: Response) {
-    return this.apiGatewayService.proxyRequest(req, res, 'http://localhost:3004');
+  @Get('health')
+  @ApiOperation({ summary: 'Check API gateway service health status' })
+  health() {
+    return {
+      status: 'healthy',
+      timestamp: new Date(),
+      uptime: process.uptime(),
+      version: '1.0.0',
+    };
   }
 }
-
