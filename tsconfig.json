@@ -18,23 +18,53 @@
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
+      "@app/contracts": [
+        "libs/contracts/src"
+      ],
+      "@app/contracts/*": [
+        "libs/contracts/src/*"
+      ],
+      "@app/common": [
+        "libs/common/src"
+      ],
+      "@app/common/*": [
+        "libs/common/src/*"
+      ],
+      "@app/messaging": [
+        "libs/messaging/src"
+      ],
+      "@app/messaging/*": [
+        "libs/messaging/src/*"
+      ],
+      "@app/auth": [
+        "libs/auth/src"
+      ],
+      "@app/auth/*": [
+        "libs/auth/src/*"
+      ],
+      "@app/logging": [
+        "libs/logging/src"
+      ],
+      "@app/logging/*": [
+        "libs/logging/src/*"
+      ],
       "@app/constants": [
-        "libs/constants/src"
+        "libs/shared/constants/src"
       ],
       "@app/constants/*": [
-        "libs/constants/src/*"
+        "libs/shared/constants/src/*"
       ],
       "@app/dto": [
-        "libs/dto/src"
+        "libs/shared/dto/src"
       ],
       "@app/dto/*": [
-        "libs/dto/src/*"
+        "libs/shared/dto/src/*"
       ],
       "@app/interfaces": [
-        "libs/interfaces/src"
+        "libs/shared/interfaces/src"
       ],
       "@app/interfaces/*": [
-        "libs/interfaces/src/*"
+        "libs/shared/interfaces/src/*"
       ]
     }
   }
